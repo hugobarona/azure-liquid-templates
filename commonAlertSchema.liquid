@@ -1,0 +1,44 @@
+{
+	"monitorCondition": "{{content.data.essentials.monitorCondition}}",
+	"signalType" : "{{content.data.essentials.signalType}}",
+	{% capture description_html %}
+        {{content.data.essentials.description  }}
+		{% if content.data.alertContext.SearchResult %}
+			{% for table in content.data.alertContext.SearchResult.tables %}
+			<h2>{{table.name}}</h2>
+			<table>
+				<tr>
+					{% for col in table.columns %}
+					<th>{{ col.name  }}</th>
+					{% endfor %}
+				</tr>
+				{% for row in table.rows %}
+				<tr>
+					{% for cell in row %}
+					<td>{{ cell | Escape }}</td>
+					{% endfor %}
+				</tr>
+				{% endfor %}
+			{% endfor %}
+			</table> 
+		{% endif %}
+    {% endcapture %}
+    "description" : "{{ description_html   }}",
+	{% if content.data.alertContext.condition.allOf.size > 0 %}
+		"metricName" : "{{content.data.alertContext.condition.allOf[0].metricName}}",
+		"metricValue" : {{content.data.alertContext.condition.allOf[0].metricValue}},
+		"operator" : "{{content.data.alertContext.condition.allOf[0].operator}}",
+		"threshold" : {{content.data.alertContext.condition.allOf[0].threshold}},
+		"windowSize" : "{{content.data.alertContext.condition.windowSize}}",
+	{% endif %}
+	{% if content.data.essentials.alertTargetIDs.size > 0 %}
+		"alertTarget" : "{{content.data.essentials.alertTargetIDs[0]}}",
+	{% endif %}
+	"monitorCondition" : "{{content.data.essentials.monitorCondition}}",
+	"firedDateTime": "{{content.data.essentials.firedDateTime}}",
+    "resolvedDateTime": "{{content.data.essentials.resolvedDateTime}}",
+	"alertRule" : "{{content.data.essentials.alertRule | Escape }}",
+	{% if content.data.alertContext.LinkToSearchResults %}
+		"url" : "{{content.data.alertContext.LinkToSearchResults}}"
+	{% endif %}
+}
